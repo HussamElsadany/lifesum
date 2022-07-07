@@ -7,9 +7,15 @@
 //
 
 enum HomeScene {
-
+    enum Food { }
 }
 
-extension HomeScene {
-
+extension HomeScene.Food {
+    struct ViewModel {
+        let title: String
+        let calories: String
+        let carbs: String
+        let protein: String
+        let fat: String
+    }
 }

@@ -7,17 +7,20 @@
 //
 
 protocol HomeScenePresentationLogic: AnyObject {
-
+    func present(food: FoodResponseModel)
+    func present(error: Error)
 }
 
 protocol HomeSceneViewStore: AnyObject {
-
+    var foodViewModel:  HomeScene.Food.ViewModel? { get set }
 }
 
 class HomeScenePresenter: HomeScenePresentationLogic, HomeSceneViewStore {
 
     // MARK: Stored Properties
     weak var displayView: HomeSceneDisplayView?
+
+    var foodViewModel:  HomeScene.Food.ViewModel?
 
     // MARK: Initializers
     required init(displayView: HomeSceneDisplayView) {
@@ -27,4 +30,24 @@ class HomeScenePresenter: HomeScenePresentationLogic, HomeSceneViewStore {
 
 extension HomeScenePresenter {
 
+    func present(food: FoodResponseModel) {
+        let viewModel = HomeScene.Food.ViewModel(title: food.response.title,
+                                                 calories: food.response.calories.formatDouble(0),
+                                                 carbs: getNumber(food.response.carbs),
+                                                 protein: getNumber(food.response.protein),
+                                                 fat: getNumber(food.response.fat))
+        foodViewModel = viewModel
+        displayView?.displayFood(viewModel: viewModel)
+    }
+    
+    func present(error: Error) {
+        displayView?.displayError(message: error.localizedDescription)
+    }
+}
+
+private extension HomeScenePresenter {
+    func getNumber(_ value: Double) -> String {
+        let stringNumber = value.formatDouble(2)
+        return stringNumber + "%"
+    }
 }
